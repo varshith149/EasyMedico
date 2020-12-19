@@ -42,9 +42,15 @@ class _SignupPageState extends State<SignupPage> {
   String _password;
  // Position _currentPosition;
   String _currentAddress;
+  List _BranchCode = [
+    '601','602','603','604','605','606','607','608','609','610','611','612','613','614','615',
+    '616','617','618','619','620','621','622','623','624','625','626','627','628','629','630'
+  ];
+  String _BCodeValue;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
 
   String result = '';
  // bool status_GPS = false;
@@ -168,7 +174,7 @@ class _SignupPageState extends State<SignupPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container (
-                  padding: EdgeInsets.fromLTRB(15, 70, 15, 0),
+                  padding: EdgeInsets.fromLTRB(15, 40, 15, 0),
                   child: Form(
                       key: _formKey,
                       child: Column(
@@ -192,6 +198,24 @@ class _SignupPageState extends State<SignupPage> {
                               onSaved: (val) => _email=val,
                               //!val.contains('@') ? EMAIL_ERROR :null,
                               //onSaved: (val) => _email=val,
+
+                            ),
+                            SizedBox(height: 10.0),
+                            TextFormField(
+                              style:
+                              TextStyle(fontSize: 22.0,color: Color.fromRGBO(100, 100, 100, 1)),
+                              controller: usernameController,
+                              decoration: InputDecoration(
+                                labelText: USERNAME,
+                                  labelStyle: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                  color: Color.fromRGBO(97, 97, 97, 1)
+                                )
+                              ),
+                              validator: (val) =>
+                                val.length<4 ? USERNAME_ERROR :null,
 
                             ),
                             SizedBox(height: 10.0),
@@ -234,7 +258,48 @@ class _SignupPageState extends State<SignupPage> {
                               },
                               obscureText: true,
                             ),
-                          ]
+                            SizedBox(height: 20.0),
+                             Padding(
+                               padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+                                child: DropdownButtonFormField(
+
+                                  hint: Text('Select Branch Code *',
+                                    style: TextStyle(color: Color.fromRGBO(97,97,97,1),fontWeight: FontWeight.bold,fontSize: 22,fontFamily: 'Montserrat'),
+                           /*         decoration: InputDecoration(
+                                      labelText: "Select Branch Code *",
+                                        labelStyle: TextStyle(
+                                            fontFamily:'Montserrat',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22,
+                                            color: Color.fromRGBO(97, 97, 97, 1)
+                                        )
+                                    ),
+                                    validator: (val)  =>
+                                    val.length==2 ? null:BRANCHCODE_ERROR, */
+                                  ),
+                                  dropdownColor: Colors.blueGrey,
+                                  elevation: 5,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 36.0,
+                                  isExpanded: true,
+                                  value: _BCodeValue,
+                                  style: TextStyle(color: Colors.black, fontSize: 22.0),
+                                  onChanged: (value){
+                                    setState(() {
+                                      _BCodeValue = value;
+                                    });
+                                  },
+                                    validator: (val)=>
+                                    val!=null ? null:BRANCHCODE_ERROR,
+                                  items: _BranchCode.map((value){
+                                    return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),);
+                                }).toList()
+                          ),
+                              ),
+
+                        ]
                       )
                   ),
                 ),
@@ -278,6 +343,8 @@ class _SignupPageState extends State<SignupPage> {
                               context, _keyLoader, NETWORK_CONNECTION_ERROR) :
                           createUser(
                               emailController.text, passwordController.text,
+                              usernameController.text,
+                              _BCodeValue,
                               _locationData.latitude.toStringAsPrecision(6),
                               _locationData.longitude.toStringAsPrecision(6),
                               _currentAddress);
@@ -324,7 +391,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
 
-  Future<void> createUser(String email, String password, //) async{
+  Future<void> createUser(String email, String password,String Username,String Branchcode, //) async{
             String Latitude,String Longitude,String Address) async{
   //_getCurrentLocation();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -337,6 +404,8 @@ class _SignupPageState extends State<SignupPage> {
 
     Map<String,String> headers = {'Content-Type':'application/json','Authorization': Token};
     final msg = jsonEncode({"EMAIL_ID":email,"PASSWORD":password,
+      "USERNAME": Username,
+      "BRANCHCODE": Branchcode,
       "LATITUDE": Latitude,//_currentPosition.latitude.toStringAsPrecision(4),
       "LONGITUDE" : Longitude, //_currentPosition.longitude.toStringAsPrecision(4),
       "ADDRESS" : Address,
