@@ -1,0 +1,141 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Auth System</title>
+    <meta charset='utf-8'>
+    <meta name = 'viewport' content='width=device-width,initial-scale=1'>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+    <script type="text/javascript" src="{% static 'jquery-3.5.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    
+    
+    
+    
+    
+    
+
+    <style>
+        html {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			/*background: #28C2FF !important;*/
+		}
+    .center,.content{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        
+    }
+    
+    .content{
+        width: 500px;
+        height: 320px;
+        background:#9EA8BA;
+        border-radius: 3px;
+        transition: .3s ease-in;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,1);
+    
+    }
+
+    .header h2{
+        font-size: 30px;
+        color: black;
+        padding-left: 32px;
+        padding-top: 0px;
+        font-weight: normal;
+        font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    .Yes-btn{
+    position: absolute;
+        bottom: 60px;
+        left: 195px;
+        border: 1px solid #27ae60;
+        border-radius: 3px;
+        color: white;
+        padding: 8px 10px;
+        font-size: 18px;
+        font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        background-color: #33ccff;
+        border-style: solid;
+        border-color: white;
+        
+    }
+
+     .No-btn{
+    position: absolute;
+        bottom: 60px;
+        right: 195px;
+        border: 1px solid #27ae60;
+        border-radius: 3px;
+        color: white;
+        padding: 8px 10px;
+        font-size: 18px;
+        font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        background-color: #33ccff;
+        border-color: white;
+        border-style: solid;
+    }
+    
+    
+		
+	</style>
+
+
+</head>
+<body>
+   <!-- <div class="center">
+        <div class="content">
+            <div class="header">
+                <h2>Saved Succesfully!</h2> 
+                <h2>Want to add more Medicines?</h2>
+            </div>
+            <button type="button" name="view" class="No-btn">
+                <a href="{% url 'View_allusers' %}" style="text-decoration:none;color:white">No</a>
+            </button>
+        <div class="Yes-btn">
+            <script>
+                document.write('<a href="' + document.referrer + '" style="text-decoration:none;color:white">Yes</a>');
+            </script>
+        </div>
+
+
+        </div>      
+    </div>-->
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         hey
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        
+</body>
+</html>
+
+

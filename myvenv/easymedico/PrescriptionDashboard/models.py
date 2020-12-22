@@ -11,6 +11,8 @@ class User(models.Model):
     LONGITUDE = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     CREATED_DATE = models.DateField(auto_now_add=True, auto_now=False, blank=True)
     MODIFIED_DATE = models.DateField(auto_now=True, blank=True)
+    USERNAME = models.CharField(max_length=256, default='test')
+    BRANCHCODE = models.IntegerField(default=601)
     IsActive = models.BooleanField(default=True)
     IsLogout = models.BooleanField(default=False)
 
@@ -28,3 +30,11 @@ class Prescriptions(models.Model):
     CREATED_DATE = models.DateField(auto_now_add=True, auto_now=False, blank=True)
     MODIFIED_DATE = models.DateField(auto_now=True, blank=True)
 
+
+class DrugDetails(models.Model):
+    PRESCRIPTION_ID = models.ForeignKey(Prescriptions, on_delete=models.CASCADE)
+    DRUG_ID = models.AutoField(primary_key=True)
+    DRUG_NAME = models.CharField(max_length=100)
+    DRUG_REQ_QTY = models.IntegerField()
+    DRUG_INSTOCK = models.IntegerField(null=True)
+    ISFULLFILL = models.BooleanField(null=True)

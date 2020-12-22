@@ -20,6 +20,7 @@ from PrescriptionDashboard.views import Registration, Login, Logout, forgot_pass
 from rest_framework.authtoken.views import obtain_auth_token
 from django.conf import settings
 from django.conf.urls.static import static
+from PrescriptionDashboard import views
 
 
 
@@ -30,7 +31,13 @@ urlpatterns = [
     url(r'^WebServices/Login/$',Login.as_view(), name='Login'),
     url(r'^WebServices/Logout/$',Logout.as_view(), name='Logout'),
     url(r'^WebServices/Forgot_password/$',forgot_password.as_view(), name='Forgot_password'),
-    url(r'^WebServices/Upload_prescription/$',upload_prescription.as_view(), name='Upload_prescription')
+    url(r'^WebServices/Upload_prescription/$',upload_prescription.as_view(), name='Upload_prescription'),
+    path('view/', views.view, name='View_allusers'),
+    path('login/', views.login, name='Login'),
+    path('yesno_popup/',views.yesno_popup,name='yesno_popup'),
+    url(r'^Image_Popup/(?P<value>\d+)/$',views.Image_Popup, name='Image_popup'),
+    path('logout/',views.logout, name='logout'),
+
 ]
 
 if settings.DEBUG:

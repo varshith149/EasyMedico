@@ -14,6 +14,9 @@ from pathlib import Path
 import os
 
 
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,8 +35,8 @@ DEBUG = True
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http') 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 #SECURE_HSTS_PRELOAD = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -50,6 +53,9 @@ INSTALLED_APPS = [
     'PrescriptionDashboard',
     'rest_framework',
     'rest_framework.authtoken',
+    
+    'sorl.thumbnail'
+    
 ]
 
 REST_FRAMEWORK = {
@@ -162,6 +168,14 @@ BASE_URL = 'http://127.0.0.1:8000/' #localhost url
 
 
 #BASE_URL = http://125.16.82.68:3781 Beta server url
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 
 

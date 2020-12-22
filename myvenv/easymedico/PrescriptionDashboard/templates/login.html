@@ -1,0 +1,132 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv = 'X-UA-Compatible' content='IE=edge'>
+    <title>Simple Auth System</title>
+    <meta name = 'viewport' content='width=device-width,initial-scale=1'>
+    
+    <style>
+		body,
+		html {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			background: #28C2FF !important;
+		}
+		.user_card {
+			position: absolute;
+			width: 350px;
+			height: 280px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			margin-top: auto;
+			margin-bottom: auto;
+			background: #9EA8BA;
+			box-shadow: 0 2px 12px 0 rgba(0,0,0,1);
+		}
+		.login_title{
+			position: absolute;
+			justify-content: center;
+			color: white;
+			font-size: 30px;
+			font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+			left: 130px;
+			top: 10px;
+			font-weight: bold;
+		}
+		.username{
+			position: absolute;
+			top: 65px;
+			left: 50px;
+		}
+		.usertext{
+			position: absolute;
+			width: 200px;
+			left: 38px;
+			height: 32px;
+		}
+		.password{
+			position: absolute;
+			top: 125px;
+			left: 50px;
+		}
+		.passtext{
+			position: absolute;
+			width: 200px;
+			left: 38px;
+			height: 30px;
+		}
+		.submit_button{
+			position: absolute;
+			top: 190px;
+			left: 110px;
+		}
+		.login_btn {
+			font-size: 20px;
+			width: 130px;
+			height: 35px;
+			border-style: solid ;
+			border-color: white;
+			background: #33ccff !important;
+			color: white !important;
+		}
+		.login_btn:focus {
+			box-shadow: none !important;
+			outline: 0px !important;
+		}
+		.message{
+			position: absolute;
+			top: 220px;
+			left: 110px;
+			font-size: 15px;
+			font-weight: normal;
+		}
+
+	</style>
+
+
+
+
+</head>
+<body>
+    <div class="container h-100">
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card">
+				<div class="login_title">
+                     LOGIN
+                </div>
+				
+				<form action="" method="post">
+                    {% csrf_token %}
+                    <div class="username">
+						<img id="myimage" src="{% static 'images/username.jpg' %}" width= 38px height = 38px >
+                        <input type="text" name="username" placeholder="username" class="usertext"><br>
+                    </div>
+                    <div class="password">							
+						<img id="myimage" src="{% static 'images/password.png' %}" width= 40px height = 36px >
+                        <input class="passtext" type="password" name="password" placeholder="password"><br>
+                    </div>
+                        <div class="submit_button">
+                            <input class="btn login_btn" type="submit" value="Login">
+                        </div>
+                </form>
+
+        <div class="message">
+            
+            {% for message in messages %}
+            <h3>{{message}}</h3>
+            {% endfor %}
+            
+        </div>
+                </div>
+            </div>
+    </div>
+</body>
+</html>
+
+
+

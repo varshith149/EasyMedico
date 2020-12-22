@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import requests
 
 # Create your views here.
 from rest_framework.views import APIView
@@ -10,6 +11,12 @@ from django.conf import settings
 from django.core.mail import EmailMessage,send_mail
 from django.template import Context
 from django.template.loader import render_to_string, get_template
+from PrescriptionDashboard.models import DrugDetails
+from django.contrib import messages
+from django.contrib.auth.models import auth
+from django.http import HttpResponseRedirect,HttpResponse
+from PrescriptionDashboard.constants import *
+from requests.exceptions import *
 
 
 
@@ -208,13 +215,187 @@ class upload_prescription(APIView):
 
 
 
+def view(request):
+    if request.session.has_key('username'):
+        #if request.method=='POST':
+            #pid = request.POST['text']
+            #a = DrugDetails.objects.all().filter(PRESCRIPTION_ID=pid)
+            #b = a.DRUG_NAME
+            #print(b)
+        imagedata = Prescriptions.objects.all().select_related('USER_ID')
+        drugdata = DrugDetails.objects.all().select_related('PRESCRIPTION_ID').order_by("DRUG_NAME")
+        print(drugdata)
+
+        context = {'imagedata':imagedata, 'drugdata':drugdata}
+        return render(request,"view.html",context)
+
+    else :
+        return redirect('/login')
+
+def login(request):
+    if request.method =='POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        #user = auth.authenticate(username=username,password=password)
+        if username=='admin' and password=='admin':
+            request.session['username'] = username
+            #auth.login(request,user)
+
+            return redirect('/view')
+        else:
+            messages.info(request,'Invalid Credentials')
+            return redirect('/login')
+
+    else: 
+        return render(request,'login.html')
+
+def Image_Popup(request, value):
+    if request.session.has_key('username'):
+        if request.method =='POST':
+            if 'record' in request.POST:
+                try: 
+                    data = request.POST.get('record')
+                    import speech_recognition as sr
+                    output=""
+                    CNUA = ""
 
 
+                    # get audio from the microphone
+                    r = sr.Recognizer()
+                    m = sr.Microphone(device_index=2)
+                    def loop():
+                        with m as source:
+                            audio = r.adjust_for_ambient_noise(source)
+                            audio = r.listen(source)
+                            try:
+                                output = r.recognize_google(audio,language="en-IN")
+                            except sr.UnknownValueError:
+                                CNUA = "Could not understand audio"
+                            except sr.RequestError as e:
+                                CNUA = "Could not request results; {0}".format(e)
+
+                    loop()
+                   # with m as source:
+                        #print("Speak:")
+                        #audio = r.adjust_for_ambient_noise(source)
+                        #audio = r.listen(source)
+
+                    #try:    
+                        #output = r.recognize_google(audio,language="en-IN")
+                    #except sr.UnknownValueError:
+                        #CNUA = "Could not understand audio"
+                    #except sr.RequestError as e:
+                        #CNUA = "Could not request results; {0}".format(e)
+                    data =output
+                    holder = CNUA
+                    pid = Prescriptions.objects.filter(Image_ID=value)
+                    context = {'pid':pid, 'data':data, 'holder':holder}
+
+
+                    return render(request,'Image_Popup.html',context) 
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    raise SystemExit(e)
+                except requests.exceptions.HTTPError as err:
+                    raise SystemExit(err)
+
+        
+            elif 'testing' in request.POST :
+                MedicineName = request.POST['MedicineName']
+                MedicineCount = request.POST['Medicine_Count']
+                val = Prescriptions.objects.get(Image_ID=value)
+
+                if DrugDetails.objects.filter(PRESCRIPTION_ID=val, DRUG_NAME__iexact= MedicineName).exists():
+                    messages.info(request,'Medicine already exists!!')
+                    return HttpResponseRedirect(request.path_info) 
+
+                
+
+                
+                else:   
+                    p = DrugDetails(PRESCRIPTION_ID=val,DRUG_NAME=MedicineName,DRUG_REQ_QTY=MedicineCount)
+                    p.save()
+
+                    messages.info(request,'Saved Successfully!!')
+                    
+                    return HttpResponseRedirect(request.path_info)
+
+        
+            
+            elif 'dropdown' in request.POST :
+                try:
+
+                    data = request.POST['MedicineName']
+                    url = URL
+                    header = HEADER
+                    data1 = {"SEARCH_KEY":data,"USER_ID":USER_ID,"IS_OTHER":True}
+                    response = requests.post(url, headers=header , json=data1, timeout=30)
+
+                    hello = list()
+                    count =  len(response.json()['PRODUCT']['PRODUCTS'])
+                    for i in range(count) :
+                        hel = response.json()['PRODUCT']['PRODUCTS'][i]['NAME']
+                        hello.append(hel) 
+                    
+                    
+                    
+                    pid = Prescriptions.objects.filter(Image_ID=value)
+                    context = {'pid':pid, 'data':data, 'response' : hello}  
+                            
+
+                    return render(request,'Image_Popup.html',context)
+                except requests.Timeout:
+                    html = "<html><body>Timeout error</body></html>"
+                    return HttpResponse(html)
+                except requests.exceptions.RequestException as e:  # This is the correct syntax
+                    raise SystemExit(e)
+                except requests.exceptions.HTTPError as err:
+                    raise SystemExit(err)
+
+
+            elif 'update' in request.POST:
+                uname = request.POST['dname']
+                uqty = request.POST['dqty']
+                pname = request.POST['pname']
+                pqty =  request.POST['pqty']
+                val = Prescriptions.objects.get(Image_ID=value)
+ 
+                d = DrugDetails.objects.get(PRESCRIPTION_ID=val, DRUG_NAME=pname, DRUG_REQ_QTY=pqty)
+                d.DRUG_NAME = uname
+                d.DRUG_REQ_QTY = uqty
+                d.save()
+                messages.info(request,'Updated Successfully!!')
+                return HttpResponseRedirect(request.path_info)
+
+
+
+                
+                    
+                
+
+        else:
+            pid = Prescriptions.objects.filter(Image_ID=value)
+            drugdata = DrugDetails.objects.filter(PRESCRIPTION_ID=value).order_by('DRUG_NAME')
+            
+            context = {'pid':pid, 'drugdata':drugdata}
+            
+            
+            return render(request,'Image_Popup.html',context)
     
+    else :
+        return redirect('/login')
 
 
+def yesno_popup(request):
+    if request.session.has_key('username'):
+        return render(request,'yesno_popup.html')
 
-
+    else :
+        return redirect('/login')
+    
+def logout(request):
+    del request.session['username']
+    return redirect('/login')
 
 
 
